@@ -1,7 +1,7 @@
 #include "BSTTree.h"
-
+//konstruktor
 BSTTree::BSTTree() : root(nullptr), treeSize(0) {}
-
+//destruktor
 BSTTree::~BSTTree() {
     clear(root);
 }
@@ -13,7 +13,7 @@ void BSTTree::clear(Node* node) {
         delete node;
     }
 }
-
+//funkcja dodajaca element do drzewa
 void BSTTree::insert(int value, int priority) {
     Node* newNode = new Node(value, priority);
     if (!root) {
@@ -21,10 +21,11 @@ void BSTTree::insert(int value, int priority) {
         treeSize++;
         return;
     }
-
+    // Znalezienie miejsca do wstawienia nowego węzła
     Node* parent = nullptr;
     Node* current = root;
     while (current) {
+        // Znaleziono miejsce do wstawienia nowego węzła
         parent = current;
         if (priority < current->priority) {
             current = current->left;
@@ -32,7 +33,7 @@ void BSTTree::insert(int value, int priority) {
             current = current->right;
         }
     }
-
+    // Wstawienie nowego węzła
     if (priority < parent->priority) {
         parent->left = newNode;
     } else {
@@ -41,21 +42,26 @@ void BSTTree::insert(int value, int priority) {
 
     treeSize++;
 }
-
+//funkcja dodajaca element do drzewa
 BSTTree::Node* BSTTree::insert(Node* node, int value, int priority) {
+    // Znalezienie miejsca do wstawienia nowego węzła
     if (!node) return new Node(value, priority);
+    // Wstawienie nowego węzła
     if (priority > node->priority) {
         Node* newNode = new Node(value, priority);
-        newNode->left = node;  // Insert new node above the current node
+        newNode->left = node;  // Wstawienie nowego węzła jako korzenia
         return newNode;
+        
     } else if (priority < node->priority) {
+        // Rekurencyjne wstawienie nowego węzła
         node->left = insert(node->left, value, priority);
     } else {
+        // Rekurencyjne wstawienie nowego węzła
         node->right = insert(node->right, value, priority);
     }
     return node;
 }
-
+//funkcja zwracajaca indeks elementu w drzewie
 std::pair<int, int> BSTTree::extractMax() {
     if (!root) throw std::runtime_error("BST is empty");
     std::pair<int, int> max = {root->value, root->priority};
@@ -64,7 +70,7 @@ std::pair<int, int> BSTTree::extractMax() {
     treeSize--;
     return max;
 }
-
+//funkcja usuwajaca element z drzewa
 BSTTree::Node* BSTTree::extractMax(Node*& node) {
     if (!node->right) {
         Node* temp = node;
@@ -73,35 +79,37 @@ BSTTree::Node* BSTTree::extractMax(Node*& node) {
     }
     return extractMax(node->right);
 }
-
+//funkcja zwracajaca maksymalny element drzewa
 std::pair<int, int> BSTTree::findMax() const {
     Node* maxNode = findMax(root);
     if (!maxNode) throw std::runtime_error("BST is empty");
     return {maxNode->value, maxNode->priority};
 }
-
+//funkcja zwracajaca maksymalny element drzewa
 BSTTree::Node* BSTTree::findMax(Node* node) const {
     while (node && node->right) node = node->right;
     return node;
 }
-
+//funkcja zmieniajaca priorytet elementu
 void BSTTree::modifyKey(int value, int newPriority) {
     root = remove(root, value);
     insert(value, newPriority);
 }
-
+//funkcja usuwajaca element z drzewa
 BSTTree::Node* BSTTree::remove(Node* root, int value) {
+    // Znalezienie węzła do usunięcia
     Node* parent = nullptr;
     Node* current = root;
     while (current && current->value != value) {
         parent = current;
+        // Przejście do lewego lub prawego poddrzewa
         if (value < current->value) {
             current = current->left;
         } else {
             current = current->right;
         }
     }
-
+    
     if (!current) return root; // Nie znaleziono wartości
 
     // Przypadek 1: Usuwany węzeł nie ma potomków (węzeł liści)
@@ -160,17 +168,17 @@ BSTTree::Node* BSTTree::remove(Node* root, int value) {
 
     return root;
 }
-
+//funkcja zwracajaca rozmiar drzewa
 int BSTTree::returnSize() const {
     return treeSize;
 }
-
+//funkcja usuwajaca wszystkie elementy z drzewa
 void BSTTree::clear() {
     clear(root);
     root = nullptr;
     treeSize = 0;
 }
-
+//funkcja wypisujaca drzewo
 void BSTTree::print() const {
     print(root);
     std::cout << std::endl;
